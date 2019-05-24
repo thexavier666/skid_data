@@ -12,8 +12,9 @@ class Skidstorm_App:
 
 		return rank_range
 
-	@route('/get_data/<page_number>')
-	def get_data(page_number):
+	#@route('/get_data/<page_number>')
+	@route('/')
+	def get_data(page_number=1):
 
 		page_number = int(page_number)
 		upper_lim = page_number * 100
