@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 from bottle import run, route
 
 
@@ -41,7 +42,7 @@ def main():
 
 	if os.environ.get() == 'heroku':
 		run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-	else
+	else:
 		run(host='localhost', port=8080, debug=True)
 
 	#run(host='localhost', port=9000, debug=True)
