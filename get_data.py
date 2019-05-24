@@ -1,36 +1,45 @@
 import json
 import requests
 import sys
+from bottle import run, route
 
-def page_number_range(page_number):
-	upper_lim = page_number * 100
-	lower_lim = (page_number * 100) - 99
 
-	rank_range = "%d-%d" % (lower_lim,upper_lim)
+class Skidstorm_App:
+	def page_number_range(page_number):
+		upper_lim = page_number * 100
+		lower_lim = (page_number * 100) - 99
 
-	return rank_range
+		rank_range = "%d-%d" % (lower_lim,upper_lim)
 
-def get_data(page_number):
+		return rank_range
 
-	rank_range = page_number_range(page_number)
+	@route('/get_data/<page_number>')
+	def get_data(page_number):
 
-	url_str = "http://api.skidstorm.cmcm.com/v2/rank/list/%s/ALL" % (rank_range)
+		page_number = int(page_number)
+		upper_lim = page_number * 100
+		lower_lim = (page_number * 100) - 99
 
-	response_obj = requests.get(url_str)
+		rank_range = "%d-%d" % (lower_lim,upper_lim)
 
-	if response_obj.status_code == 200:
-		json_dump = response_obj.json()
+		#rank_range = self.page_number_range(int(page_number))
 
-		#print(json_dump)
+		url_str = "http://api.skidstorm.cmcm.com/v2/rank/list/%s/ALL" % (rank_range)
 
-		return json_dump
+		response_obj = requests.get(url_str)
 
-	else:
-		error_str = "{status:ERROR}"
-		return error_str
+		if response_obj.status_code == 200:
+			json_dump = response_obj.json()
+
+			return json_dump
+
+		else:
+			error_str = "{status:ERROR}"
+			return error_str
 
 def main():
-	get_data(1)
+
+	run(host='localhost', port=9000, debug=True)
 
 if __name__ == '__main__':
 	main()
