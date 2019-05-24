@@ -5,7 +5,11 @@ from bottle import run, route
 
 
 class Skidstorm_App:
-	def page_number_range(page_number):
+
+	def __init__(self):
+		self.url_str_prefix = "http://api.skidstorm.cmcm.com/v2/"
+
+	def page_number_range(self,page_number):
 		upper_lim = page_number * 100
 		lower_lim = (page_number * 100) - 99
 
@@ -13,21 +17,23 @@ class Skidstorm_App:
 
 		return rank_range
 
-	@route('/get_data/<page_number>')
-	#@route('/')
-	def get_data(page_number=1):
+	def get_index(self):
+		web_str = "<h1>Drift Revolution is #1</h1>\n \
+		<h1>Drift Revolution Fresher is also #1</h1>\n \
+		<h5>Rush is #3</h5>"
+		return web_str
 
-		page_number = int(page_number)
-		upper_lim = page_number * 100
-		lower_lim = (page_number * 100) - 99
+	#@route('/players/<num_players>')
+	#def get_player_data(num_players):
+		
+	def get_data(self,page_number=1):
 
-		rank_range = "%d-%d" % (lower_lim,upper_lim)
 
-		#rank_range = self.page_number_range(int(page_number))
+		rank_range = self.page_number_range(int(page_number))
 
-		url_str = "http://api.skidstorm.cmcm.com/v2/rank/list/%s/ALL" % (rank_range)
+		full_url_str = self.url_str_prefix + "rank/list/%s/ALL" % (rank_range)
 
-		response_obj = requests.get(url_str)
+		response_obj = requests.get(full_url_str)
 
 		if response_obj.status_code == 200:
 			json_dump = response_obj.json()
@@ -39,6 +45,11 @@ class Skidstorm_App:
 			return error_str
 
 def main():
+
+	skid_app = Skidstorm_App()
+
+	route('/get_data/<page_number>')(skid_app.get_data)
+	route('/')(skid_app.get_index)
 
 	if os.environ.get('APP_LOCATION') == 'heroku':
 		run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
