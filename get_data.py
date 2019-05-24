@@ -1,6 +1,5 @@
 import json
 import requests
-import sys
 from bottle import run, route
 
 
