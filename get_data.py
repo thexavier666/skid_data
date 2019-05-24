@@ -13,8 +13,8 @@ class Skidstorm_App:
 
 		return rank_range
 
-	#@route('/get_data/<page_number>')
-	@route('/')
+	@route('/get_data/<page_number>')
+	#@route('/')
 	def get_data(page_number=1):
 
 		page_number = int(page_number)
