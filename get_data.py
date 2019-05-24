@@ -38,7 +38,12 @@ class Skidstorm_App:
 
 def main():
 
-	run(host='localhost', port=9000, debug=True)
+	if os.environ.get() == 'heroku':
+		run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+	else
+		run(host='localhost', port=8080, debug=True)
+
+	#run(host='localhost', port=9000, debug=True)
 
 if __name__ == '__main__':
 	main()
