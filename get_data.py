@@ -1,12 +1,13 @@
 import json
 import requests
 import os
-from bottle import run, route
+from bottle import run, route, static_file
 
 class Skidstorm_App:
 
-	def __init__(self):
+	def __init__(self,dummy_args):
 		self.url_str_prefix = "http://api.skidstorm.cmcm.com/v2/"
+		self.dummy_args = dummy_args
 
 	def page_number_range(self,page_number):
 		upper_lim = page_number * 100
@@ -16,17 +17,11 @@ class Skidstorm_App:
 
 		return rank_range
 
-	def get_index(self):
-		web_str = "<h1>Drift Revolution is #1</h1>\n \
-		<h1>Drift Revolution Fresher is also #1</h1>\n \
-		<h5>Rush is #3</h5>"
-		return web_str
+	def get_dummy(self):
+		return self.dummy_args
 
-	def get_baby(self):
-		web_str = "<h1>Hey Prerona baby!</h1>\n \
-			<h2>How are you? :)</h2>"
-
-		return web_str
+	def get_web_pages(self,filepath):
+		return static_file(filepath, root="./public")
 	
 	def list_to_string(self,some_list):
 
@@ -90,11 +85,11 @@ class Skidstorm_App:
 
 def main():
 
-	skid_app = Skidstorm_App()
+	skid_app = Skidstorm_App("100")
 
+	route('/<filepath:path>')(skid_app.get_web_pages)
 	route('/get_data/<page_number>')(skid_app.get_data)
-	route('/')(skid_app.get_index)
-	route('/baby')(skid_app.get_baby)
+	route('/dummy')(skid_app.get_dummy)
 	route('/get_player_data/<page_number>')(skid_app.get_player_data)
 
 	if os.environ.get('APP_LOCATION') == 'heroku':
